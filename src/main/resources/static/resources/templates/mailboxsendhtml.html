@@ -1,0 +1,48 @@
+<div class="layui-tab layui-tab-fixed layui-tab-brief">
+  <ul class="layui-tab-title">
+    <li class="layui-this">基本配置</li>
+  </ul>
+  <div class="layui-tab-content editor-form-node">
+    <div class="layui-tab-item layui-show">
+    	<form class="layui-form">
+    		<div class="layui-form-item">
+    			<label class="layui-form-label">节点名称</label>
+    			<div class="layui-input-block">
+    				<input type="text" name="value" placeholder="请输入节点名称" value="{{=d.value}}" autocomplete="off" class="layui-input">
+    			</div>
+    		</div>
+    		<div class="layui-form-item">
+    			<label class="layui-form-label">数据源</label>
+    			<div class="layui-input-block">
+    				<select name="datasourceId">
+    					{{# for(var datasourceIndex in d.model.cells){ }}
+    						{{# var cell = d.model.cells[datasourceIndex] }}
+    						{{# if(cell.data&&cell.data.get('shape') == 'mailbox'){ }}
+    							<option value="{{=datasourceIndex}}" {{datasourceIndex == d.data.object.datasourceId ? 'selected': ''}}>{{cell.value}}</option>
+    						{{# } }}
+    					{{# } }}
+    				</select>
+    			</div>
+    		</div>
+    		<div class="layui-form-item">
+    			<label class="layui-form-label">收件人</label>
+    			<div class="layui-input-block">
+    				<input type="text" name="mailboxmail" placeholder="如果多个收件人使用','隔开" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.mailboxmail}}">
+    			</div>
+    		</div>
+    		<div class="layui-form-item">
+    			<label class="layui-form-label">邮箱标题</label>
+    			<div class="layui-input-block">
+    				<input type="text" name="mailboxsubject" placeholder="请输入邮箱标题" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.mailboxsubject}}">
+    			</div>
+    		</div>
+    		<div class="layui-form-item">
+    			<label class="layui-form-label">发送内容</label>
+    			<div class="layui-input-block">
+    				<textarea class="layui-input" placeholder="支持html" style="height:200px" name="mailboxcontext">{{=d.data.object.mailboxcontext}}</textarea>
+    			</div>
+    		</div>
+    	</form>
+    </div>
+  </div>
+</div>
