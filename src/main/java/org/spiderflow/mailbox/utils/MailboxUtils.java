@@ -3,7 +3,6 @@ package org.spiderflow.mailbox.utils;
 import java.util.Date;
 import java.util.Properties;
 
-import org.spiderflow.model.JsonBean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 

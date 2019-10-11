@@ -31,6 +31,12 @@
     			</div>
     		</div>
     		<div class="layui-form-item">
+    			<label class="layui-form-label">抄送人</label>
+    			<div class="layui-input-block">
+    				<input type="text" name="mailboxcc" placeholder="如果多个抄送人使用','隔开" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.mailboxcc}}">
+    			</div>
+    		</div>
+    		<div class="layui-form-item">
     			<label class="layui-form-label">邮箱标题</label>
     			<div class="layui-input-block">
     				<input type="text" name="mailboxsubject" placeholder="请输入邮箱标题" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.mailboxsubject}}">
