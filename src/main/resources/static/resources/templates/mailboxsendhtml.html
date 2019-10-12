@@ -1,54 +1,82 @@
 <div class="layui-tab layui-tab-fixed layui-tab-brief">
-  <ul class="layui-tab-title">
-    <li class="layui-this">基本配置</li>
-  </ul>
-  <div class="layui-tab-content editor-form-node">
-    <div class="layui-tab-item layui-show">
-    	<form class="layui-form">
-    		<div class="layui-form-item">
-    			<label class="layui-form-label">节点名称</label>
-    			<div class="layui-input-block">
-    				<input type="text" name="value" placeholder="请输入节点名称" value="{{=d.value}}" autocomplete="off" class="layui-input">
-    			</div>
-    		</div>
-    		<div class="layui-form-item">
-    			<label class="layui-form-label">数据源</label>
-    			<div class="layui-input-block">
-    				<select name="datasourceId">
-    					{{# for(var datasourceIndex in d.model.cells){ }}
-    						{{# var cell = d.model.cells[datasourceIndex] }}
-    						{{# if(cell.data&&cell.data.get('shape') == 'mailbox'){ }}
-    							<option value="{{=datasourceIndex}}" {{datasourceIndex == d.data.object.datasourceId ? 'selected': ''}}>{{cell.value}}</option>
-    						{{# } }}
-    					{{# } }}
-    				</select>
-    			</div>
-    		</div>
-    		<div class="layui-form-item">
-    			<label class="layui-form-label">收件人</label>
-    			<div class="layui-input-block">
-    				<input type="text" name="mailboxmail" placeholder="如果多个收件人使用','隔开" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.mailboxmail}}">
-    			</div>
-    		</div>
-    		<div class="layui-form-item">
-    			<label class="layui-form-label">抄送人</label>
-    			<div class="layui-input-block">
-    				<input type="text" name="mailboxcc" placeholder="如果多个抄送人使用','隔开" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.mailboxcc}}">
-    			</div>
-    		</div>
-    		<div class="layui-form-item">
-    			<label class="layui-form-label">邮箱标题</label>
-    			<div class="layui-input-block">
-    				<input type="text" name="mailboxsubject" placeholder="请输入邮箱标题" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.mailboxsubject}}">
-    			</div>
-    		</div>
-    		<div class="layui-form-item">
-    			<label class="layui-form-label">发送内容</label>
-    			<div class="layui-input-block">
-    				<textarea class="layui-input" placeholder="支持html" style="height:200px" name="mailboxcontext">{{=d.data.object.mailboxcontext}}</textarea>
-    			</div>
-    		</div>
-    	</form>
-    </div>
-  </div>
+	<ul class="layui-tab-title">
+		<li class="layui-this">基本配置</li>
+	</ul>
+	<div class="layui-tab-content editor-form-node">
+		<div class="layui-tab-item layui-show">
+			<form class="layui-form">
+				<div class="layui-form-item">
+					<label class="layui-form-label">节点名称</label>
+					<div class="layui-input-block">
+						<input type="text" name="value" placeholder="请输入节点名称" value="{{=d.value}}" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">数据源</label>
+					<div class="layui-input-block">
+						<select name="datasourceId"> 
+						{{# for(var datasourceIndex in d.model.cells){ }} 
+							{{# var cell = d.model.cells[datasourceIndex] }} 
+							{{#if(cell.data&&cell.data.get('shape') == 'mailbox'){ }}
+								<option value="{{=datasourceIndex}}" {{datasourceIndex==d.data.object.datasourceId?'selected': ''}}>{{cell.value}}</option> 
+							{{# } }} 
+						{{# } }}
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">收件人</label>
+					<div class="layui-input-block">
+						<input type="text" name="mailboxmail" placeholder="如果多个收件人使用','隔开" autocomplete="off" class="layui-input input-default"
+							value="{{=d.data.object.mailboxmail}}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">抄送人</label>
+					<div class="layui-input-block">
+						<input type="text" name="mailboxcc" placeholder="如果多个抄送人使用','隔开" autocomplete="off" class="layui-input input-default" value="{{=d.data.object.mailboxcc}}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">邮箱标题</label>
+					<div class="layui-input-block">
+						<input type="text" name="mailboxsubject" placeholder="请输入邮箱标题" autocomplete="off" class="layui-input input-default"
+							value="{{=d.data.object.mailboxsubject}}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">发送内容</label>
+					<div class="layui-input-block">
+						<textarea class="layui-input" placeholder="支持html" style="height: 200px" name="mailboxcontext">{{=d.data.object.mailboxcontext}}</textarea>
+					</div>
+				</div>
+				{{# layui.each(d.data.object['enclosure-name'],function(index,output){ }}
+				<hr>
+				<div class="layui-form-item layui-form-relative">
+					<i class="layui-icon layui-icon-close output-remove"></i> <label class="layui-form-label">附件名称</label>
+					<div class="layui-input-block">
+						<input type="text" name="enclosure-name" placeholder="请输入附件名称" autocomplete="off" class="layui-input array"
+							value="{{=d.data.object['enclosure-name'][index]}}">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">附件</label>
+					<div class="layui-input-block array" codemirror="enclosure-value" placeholder="仅支持bety[]类型" data-value="{{=d.data.object['enclosure-value'][index]}}"></div>
+				</div>
+				{{# }) }}
+				<hr>
+				<div class="layui-form-item">
+					<div class="layui-input-block">
+						<button class="layui-btn mailbox-enclosure-add" type="button">添加一个附件</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
+<script>
+	$("body").on("click",".editor-form-node .mailbox-enclosure-add",function(){
+		$(this).parent().parent().before('<div class="layui-form-item layui-form-relative"><i class="layui-icon layui-icon-close output-remove"></i><label class="layui-form-label">附件名称</label><div class="layui-input-block"><input type="text" name="enclosure-name" placeholder="请输入附件名称" autocomplete="off" class="layui-input array"></div></div><div class="layui-form-item"><label class="layui-form-label">附件</label><div class="layui-input-block array" codemirror="enclosure-value" placeholder="仅支持bety[]类型"></div></div><hr>');
+		renderCodeMirror();
+	})
+</script>
