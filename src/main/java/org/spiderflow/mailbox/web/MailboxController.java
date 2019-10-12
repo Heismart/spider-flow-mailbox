@@ -26,7 +26,6 @@ public class MailboxController {
 			mailboxTemplate.send(mailMessage);
 			return new JsonBean<String>(1, "测试成功");
 		} catch (Exception e) {
-			e.printStackTrace();
 			return new JsonBean<String>(-1, e.getMessage());
 		}
 	}

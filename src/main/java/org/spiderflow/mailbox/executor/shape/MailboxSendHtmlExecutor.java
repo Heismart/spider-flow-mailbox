@@ -3,6 +3,7 @@ package org.spiderflow.mailbox.executor.shape;
 import java.util.Date;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,43 +71,71 @@ public class MailboxSendHtmlExecutor implements ShapeExecutor {
 		String mailboxSubject = node.getStringJsonValue(MAILBOX_SUBJECT);
 		String mailboxContext = node.getStringJsonValue(MAILBOX_CONTEXT);
 		if (!StringUtils.isNotBlank(mailboxMail)) {
-			context.debug("邮箱接收地址为空！");
+			context.error("邮箱收件人为空！");
 		} else if (!StringUtils.isNotBlank(mailboxSubject)) {
-			context.debug("邮箱标题为空！");
+			context.error("邮箱标题为空！");
 		} else if (!StringUtils.isNotBlank(mailboxContext)) {
-			context.debug("邮箱发送内容为空！");
+			context.error("邮箱发送内容为空！");
 		} else {
+			JavaMailSenderImpl mailboxTemplate = (JavaMailSenderImpl) context.get(MailboxExecutor.MAILBOX_CONTEXT_KEY + datasourceId);
+			MimeMessage message = mailboxTemplate.createMimeMessage();
+			MimeMessageHelper mailMessage = null;
 			try {
-				JavaMailSenderImpl mailboxTemplate = (JavaMailSenderImpl) context.get(MailboxExecutor.MAILBOX_CONTEXT_KEY + datasourceId);
-				MimeMessage message = mailboxTemplate.createMimeMessage();
-				// true 表⽰示需要创建⼀一个 multipart message
-				MimeMessageHelper mailMessage = new MimeMessageHelper(message, true);
+				mailMessage = new MimeMessageHelper(message, true);
 				mailMessage.setFrom(mailboxTemplate.getUsername());
-				// 处理发送人变量值
+				// 处理收件人变量值
 				mailboxMail = engine.execute(mailboxMail, variables).toString();
 				mailMessage.setTo(mailboxMail.split(","));
-				context.debug("设置发送人信息成功！");
+				context.debug("设置收件人信息成功！");
+			} catch (NullPointerException e) {
+				context.error("收件人为空！");
+				return;
+			} catch (MessagingException e1) {
+				context.error("收件人格式不正确:{}", e1);
+				return;
+			}
+			try {
 				// 设置抄送人
 				if (StringUtils.isNotBlank(mailboxCc)) {
 					mailMessage.setCc(mailboxCc.split(","));
+					context.debug("设置抄送人信息成功！");
 				}
-				context.debug("设置抄送人信息成功！");
+			} catch (Exception e) {
+				context.error("抄送人格式不正确:{}", e);
+				return;
+			}
+			try {
 				// 处理标题变量值
 				mailboxSubject = engine.execute(mailboxSubject, variables).toString();
 				mailMessage.setSubject(mailboxSubject);
 				mailMessage.setSentDate(new Date());// 发送时间
 				context.debug("设置发送标题成功！");
+			} catch (NullPointerException e) {
+				context.error("标题为空！");
+				return;
+			} catch (Exception e) {
+				context.error("发送标题数据格式不正确:{}", e);
+				return;
+			}
+			try {
 				// 处理发送内容变量值
 				mailboxContext = engine.execute(mailboxContext, variables).toString();
 				mailMessage.setText(mailboxContext, true);
 				context.debug("设置发送内容成功！");
+			} catch (NullPointerException e) {
+				context.error("发送内容为空！");
+				return;
+			} catch (Exception e) {
+				context.error("发送内容数据格式不正确:{}", e);
+				return;
+			}
+			try {
+				context.debug("邮箱发送中.......请稍后！");
 				mailboxTemplate.send(message);
 				context.debug("邮箱发送成功！");
 			} catch (Exception e) {
-				context.error("邮箱发送失败！");
+				context.error("邮箱发送失败:{}", e);
 			}
 		}
-
 	}
-
 }
