@@ -9,6 +9,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spiderflow.ExpressionEngine;
 import org.spiderflow.context.SpiderContext;
 import org.spiderflow.executor.ShapeExecutor;
@@ -56,6 +58,8 @@ public class MailboxSendHtmlExecutor implements ShapeExecutor {
 	 */
 	public static final String ENCLOSURE_VALUE = "enclosure-value";
 
+	private static Logger logger = LoggerFactory.getLogger(MailboxSendHtmlExecutor.class);
+
 	@Autowired
 	private ExpressionEngine engine;
 
@@ -89,11 +93,11 @@ public class MailboxSendHtmlExecutor implements ShapeExecutor {
 		String mailboxContext = node.getStringJsonValue(MAILBOX_CONTEXT);
 		List<Map<String, String>> enclosure = node.getListJsonValue(ENCLOSURE_NAME, ENCLOSURE_VALUE);
 		if (!StringUtils.isNotBlank(mailboxMail)) {
-			context.error("邮箱收件人为空！");
+			logger.error("邮箱收件人为空！");
 		} else if (!StringUtils.isNotBlank(mailboxSubject)) {
-			context.error("邮箱标题为空！");
+			logger.error("邮箱标题为空！");
 		} else if (!StringUtils.isNotBlank(mailboxContext)) {
-			context.error("邮箱发送内容为空！");
+			logger.error("邮箱发送内容为空！");
 		} else {
 			JavaMailSenderImpl mailboxTemplate = (JavaMailSenderImpl) context.get(MailboxExecutor.MAILBOX_CONTEXT_KEY + datasourceId);
 			MimeMessage message = mailboxTemplate.createMimeMessage();
@@ -104,32 +108,32 @@ public class MailboxSendHtmlExecutor implements ShapeExecutor {
 				// 处理收件人变量值
 				mailboxMail = engine.execute(mailboxMail, variables).toString();
 				mailMessage.setTo(mailboxMail.split(","));
-				context.debug("设置收件人信息成功！");
+				logger.debug("设置收件人信息成功！");
 			} catch (NullPointerException e) {
-				context.error("收件人为空！");
+				logger.error("收件人为空！");
 				return;
 			} catch (MessagingException e1) {
-				context.error("收件人格式不正确:{}", e1);
+				logger.error("收件人格式不正确:{}", e1);
 				return;
 			}
 			try {
 				// 设置抄送人
 				if (StringUtils.isNotBlank(mailboxCc)) {
 					mailMessage.setCc(mailboxCc.split(","));
-					context.debug("设置抄送人信息成功！");
+					logger.debug("设置抄送人信息成功！");
 				}
 			} catch (Exception e) {
-				context.error("抄送人格式不正确:{}", e);
+				logger.error("抄送人格式不正确:{}", e);
 				return;
 			}
 			try {
 				// 设置暗抄送人
 				if (StringUtils.isNotBlank(mailboxBcc)) {
 					mailMessage.setBcc(mailboxBcc.split(","));
-					context.debug("设置暗抄送人信息成功！");
+					logger.debug("设置暗抄送人信息成功！");
 				}
 			} catch (Exception e) {
-				context.error("暗抄送人格式不正确:{}", e);
+				logger.error("暗抄送人格式不正确:{}", e);
 				return;
 			}
 			try {
@@ -137,24 +141,24 @@ public class MailboxSendHtmlExecutor implements ShapeExecutor {
 				mailboxSubject = engine.execute(mailboxSubject, variables).toString();
 				mailMessage.setSubject(mailboxSubject);
 				mailMessage.setSentDate(new Date());// 发送时间
-				context.debug("设置发送标题成功！");
+				logger.debug("设置发送标题成功！");
 			} catch (NullPointerException e) {
-				context.error("标题为空！");
+				logger.error("标题为空！");
 				return;
 			} catch (Exception e) {
-				context.error("发送标题数据格式不正确:{}", e);
+				logger.error("发送标题数据格式不正确:{}", e);
 				return;
 			}
 			try {
 				// 处理发送内容变量值
 				mailboxContext = engine.execute(mailboxContext, variables).toString();
 				mailMessage.setText(mailboxContext, true);
-				context.debug("设置发送内容成功！");
+				logger.debug("设置发送内容成功！");
 			} catch (NullPointerException e) {
-				context.error("发送内容为空！");
+				logger.error("发送内容为空！");
 				return;
 			} catch (Exception e) {
-				context.error("发送内容数据格式不正确:{}", e);
+				logger.error("发送内容数据格式不正确:{}", e);
 				return;
 			}
 			try {
@@ -168,15 +172,15 @@ public class MailboxSendHtmlExecutor implements ShapeExecutor {
 					}
 				}
 			} catch (Exception e) {
-				context.error("附件格式错误:{}", e);
+				logger.error("附件格式错误:{}", e);
 				return;
 			}
 			try {
-				context.debug("邮箱发送中.......请稍等！");
+				logger.debug("邮箱发送中.......请稍等！");
 				mailboxTemplate.send(message);
-				context.debug("邮箱发送成功！");
+				logger.debug("邮箱发送成功！");
 			} catch (Exception e) {
-				context.error("邮箱发送失败:{}", e);
+				logger.error("邮箱发送失败:{}", e);
 			}
 		}
 	}
