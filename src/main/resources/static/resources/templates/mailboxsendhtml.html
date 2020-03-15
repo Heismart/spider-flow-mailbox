@@ -58,16 +58,18 @@
 				</div>
 				{{# layui.each(d.data.object['enclosure-name'],function(index,output){ }}
 				<hr>
-				<div class="layui-form-item layui-form-relative">
-					<i class="layui-icon layui-icon-close output-remove"></i> <label class="layui-form-label">附件名称</label>
-					<div class="layui-input-block">
-						<input type="text" name="enclosure-name" placeholder="请输入附件名称" autocomplete="off" class="layui-input array"
-							value="{{=d.data.object['enclosure-name'][index]}}">
+				<div class="draggable" draggable="true">
+					<div class="layui-form-item layui-form-relative">
+						<i class="layui-icon layui-icon-close function-remove"></i> <label class="layui-form-label">附件名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="enclosure-name" placeholder="请输入附件名称" autocomplete="off" class="layui-input array"
+								value="{{=d.data.object['enclosure-name'][index]}}">
+						</div>
 					</div>
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label">附件</label>
-					<div class="layui-input-block array" codemirror="enclosure-value" placeholder="仅支持bety[]类型,实例:${file.bytes('C:\1.jpg')}" data-value="{{=d.data.object['enclosure-value'][index]}}"></div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">附件</label>
+						<div class="layui-input-block array" codemirror="enclosure-value" placeholder="仅支持bety[]类型,实例:${file.bytes('C:\1.jpg')}" data-value="{{=d.data.object['enclosure-value'][index]}}"></div>
+					</div>
 				</div>
 				{{# }) }}
 				<hr>
@@ -81,8 +83,8 @@
 	</div>
 </div>
 <script>
-	$("body").on("click",".editor-form-node .mailbox-enclosure-add",function(){
-		$(this).parent().parent().before('<div class="layui-form-item layui-form-relative"><i class="layui-icon layui-icon-close output-remove"></i><label class="layui-form-label">附件名称</label><div class="layui-input-block"><input type="text" name="enclosure-name" placeholder="请输入附件名称" autocomplete="off" class="layui-input array"></div></div><div class="layui-form-item"><label class="layui-form-label">附件</label><div class="layui-input-block array" codemirror="enclosure-value" placeholder="仅支持bety[]类型,实例:${file.bytes(\'C:\\1.jpg\')}"></div></div><hr>');
+	$(".mailbox-enclosure-add").on("click",function(){
+		$(this).parent().parent().before('<div class="draggable" draggable="true"><div class="layui-form-item layui-form-relative"><i class="layui-icon layui-icon-close function-remove"></i><label class="layui-form-label">附件名称</label><div class="layui-input-block"><input type="text" name="enclosure-name" placeholder="请输入附件名称" autocomplete="off" class="layui-input array"></div></div><div class="layui-form-item"><label class="layui-form-label">附件</label><div class="layui-input-block array" codemirror="enclosure-value" placeholder="仅支持bety[]类型,实例:${file.bytes(\'C:\\1.jpg\')}"></div></div></div>');
 		renderCodeMirror();
 	})
 </script>
