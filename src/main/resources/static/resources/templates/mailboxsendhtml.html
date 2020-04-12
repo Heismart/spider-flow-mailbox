@@ -14,14 +14,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">数据源</label>
 					<div class="layui-input-block">
-						<select name="datasourceId"> 
-						{{# for(var datasourceIndex in d.model.cells){ }} 
-							{{# var cell = d.model.cells[datasourceIndex] }} 
-							{{#if(cell.data&&cell.data.get('shape') == 'mailbox'){ }}
-								<option value="{{=datasourceIndex}}" {{datasourceIndex==d.data.object.datasourceId?'selected': ''}}>{{cell.value}}</option> 
-							{{# } }} 
-						{{# } }}
-						</select>
+						<select name="datasourceId"></select>
 					</div>
 				</div>
 				<div class="layui-form-item">
@@ -52,9 +45,7 @@
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">发送内容</label>
-					<div class="layui-input-block">
-						<textarea class="layui-input" placeholder="支持html" style="height: 200px" name="mailboxcontext">{{=d.data.object.mailboxcontext}}</textarea>
-					</div>
+					<div class="layui-input-block" style="height:200px;" placeholder="支持html" codemirror="mailboxcontext" data-value="{{=d.data.object.mailboxcontext}}"></div>
 				</div>
 				{{# layui.each(d.data.object['enclosure-name'],function(index,output){ }}
 				<hr>
@@ -86,5 +77,23 @@
 	$(".mailbox-enclosure-add").on("click",function(){
 		$(this).parent().parent().before('<div class="draggable" draggable="true"><div class="layui-form-item layui-form-relative"><i class="layui-icon layui-icon-close function-remove"></i><label class="layui-form-label">附件名称</label><div class="layui-input-block"><input type="text" name="enclosure-name" placeholder="请输入附件名称" autocomplete="off" class="layui-input array"></div></div><div class="layui-form-item"><label class="layui-form-label">附件</label><div class="layui-input-block array" codemirror="enclosure-value" placeholder="仅支持bety[]类型,实例:${file.bytes(\'C:\\1.jpg\')}"></div></div></div>');
 		renderCodeMirror();
-	})
+	});
+	$.ajax({
+		url : 'mail/list',
+		data : {
+			limit : 9999
+		},
+		success : function(data){
+			var mails = data.records;
+			for(var i=0,len = mails.length;i<len;i++){
+				var mail = mails[i];
+				$('select[name=datasourceId]').append('<option value="'+mail.id+'">'+mail.name+'</option>');
+			}
+			layui.form.render();
+			var selectMailId = '{{=d.data.object.datasourceId}}';
+			if(selectMailId != ''){
+				$('.layui-form-select dd[lay-value='+selectMailId+']').trigger('click');
+			}
+		}
+	});
 </script>
