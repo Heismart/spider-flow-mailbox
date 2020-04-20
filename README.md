@@ -9,6 +9,7 @@ spider-flow mailbox插件
 
 #### 使用方法
 导入db文件夹sp_sp_mail.sql文件到数据库
+
 在 spider-flow-web/pom.xml引用  
 ```java
 <dependency>
